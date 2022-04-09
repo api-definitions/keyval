@@ -1,4 +1,18 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
 
-# gazelle:prefix github.com/example/project
-gazelle(name = "gazelle")
+gazelle_binary(
+    name = "gazelle-protobuf",
+    languages = [
+        "@bazel_gazelle//language/go",
+        "@bazel_gazelle//language/proto",
+        # must be after the proto extension (order matters)
+        "@build_stack_rules_proto//language/protobuf",
+    ],
+)
+
+# gazelle:prefix github.com/api-definitions/keyval
+
+gazelle(
+    name = "gazelle",
+    gazelle = ":gazelle-protobuf",
+)

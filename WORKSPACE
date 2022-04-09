@@ -54,3 +54,7 @@ core_deps()
 load("@build_stack_rules_proto//:go_deps.bzl", "gazelle_protobuf_extension_go_deps")
 
 gazelle_protobuf_extension_go_deps()
+
+load("@build_stack_rules_proto//deps:protobuf_core_deps.bzl", "protobuf_core_deps")
+
+protobuf_core_deps()
