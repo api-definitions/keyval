@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package apidefinitions.keyval;
+
+option go_package = "github.com/api-definitions/keyval/proto/keyvalpb";
+
+// A simple key-value storage service
+service KeyValueService {
+  // Provides a value for each key request
+  rpc HasValue (HasValueRequest) returns (HasValueResponse) {}
+
+  // Provides a value for each key request
+  rpc GetValue (GetValueRequest) returns (Value) {}
+
+  // Provides a value for each key request
+  rpc SetValue (SetValueRequest) returns (SetValueResponse) {}
+}
+
+// The request message containing the key
+message SetValueRequest {
+  // Key to set.
+  Key key = 1;
+  // Value to set.
+  Value value = 2;
+
+  // Uniquely identifies the database or table instance to the server.
+  string database_name = 3;
+
+  // Specifies whether the key should be overwritten if a value alredy exists.
+  // If unspecified, defaults to true. 
+  optional bool overwrite = 4;
+}
+
+// The response message containing the value associated with the key
+message SetValueResponse {}
+
+// The type used for all keys in the database.
+message Key {
+  bytes key_bytes = 1;
+}
+
+// The type used for all values in the database.
+message Value {
+  bytes value_bytes = 1;
+}
+
+// The request message containing the key.
+message GetValueRequest {
+  Key key = 1;
+}
+
+// The request message containing the key.
+message HasValueRequest {
+  Key key = 1;
+}
+
+// The response message indicates whether the key exists in the key/value set.
+message HasValueResponse {
+  bool entry_exists = 1;
+}
