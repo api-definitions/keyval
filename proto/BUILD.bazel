@@ -10,7 +10,7 @@ proto_library(
 go_proto_library(
     name = "keyvalpb_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/api-definitions/keyval/proto/keyvalpb",
+    importpath = "github.com/api-definitions/keyval/proto/go/keyvalpb",
     proto = ":keyvalpb_proto",
     visibility = ["//visibility:public"],
 )

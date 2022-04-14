@@ -24,6 +24,9 @@ bazel-keyval
 bazel-testlogs
 .cache
 
+# For https://github.com/gonzojive/bazelgopackagesdriver
+.bazelgopackagesdriver/*
+
 .bazelrc.user
 .idea
 rules_nodejs-*.tar.gz
@@ -36,4 +39,3 @@ node_modules
 !/third_party/npm/node_modules
 yarn-error.log
 internal/node/_node_bin
-

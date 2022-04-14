@@ -1,4 +1,5 @@
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
+load("@io_bazel_rules_go//go:def.bzl", "go_path")
 
 gazelle_binary(
     name = "gazelle-protobuf",
@@ -15,4 +16,14 @@ gazelle_binary(
 gazelle(
     name = "gazelle",
     gazelle = ":gazelle-protobuf",
+)
+
+# To get good autocomplete in VS Code for protobufs, use the solution from
+# https://stackoverflow.com/questions/55411277/how-can-i-setup-vscode-for-go-project-built-with-bazel
+go_path(
+    name = "gopath_for_vscode",
+    mode = "link",
+    deps = [
+        "//proto:keyvalpb_go_proto",
+    ],
 )

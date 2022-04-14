@@ -6,16 +6,24 @@ workspace(
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 ### rules_go: https://github.com/bazelbuild/rules_go
 
-http_archive(
+# http_archive(
+#     name = "io_bazel_rules_go",
+#     sha256 = "f2dcd210c7095febe54b804bb1cd3a58fe8435a909db2ec04e31542631cf715c",
+#     urls = [
+#         "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.31.0/rules_go-v0.31.0.zip",
+#         "https://github.com/bazelbuild/rules_go/releases/download/v0.31.0/rules_go-v0.31.0.zip",
+#     ],
+# )
+
+# Temporarily use this because of https://github.com/bazelbuild/rules_go/pull/3083
+git_repository(
     name = "io_bazel_rules_go",
-    sha256 = "f2dcd210c7095febe54b804bb1cd3a58fe8435a909db2ec04e31542631cf715c",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.31.0/rules_go-v0.31.0.zip",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.31.0/rules_go-v0.31.0.zip",
-    ],
+    commit = "56bc90ca2ac12c39f881094ccc5722bdc6118116",
+    remote = "https://github.com/abhinav/rules_go.git",
 )
 
 http_archive(
@@ -27,12 +35,25 @@ http_archive(
     ],
 )
 
+git_repository(
+    name = "rules_pkg",
+    commit = "4f8f6ed027c07b92e4ee5a8b4b51d8673fcc60ee", # v0.7
+    remote = "https://github.com/bazelbuild/rules_pkg.git",
+)
+
+git_repository(
+    name = "com_google_protobuf",
+    commit = "bc799d78f81115940eec953e2937245c70e3e6e4", # v3.20.0
+    remote = "https://github.com/protocolbuffers/protobuf.git",
+)
+
+
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.18")
+go_register_toolchains(version = "1.18.1")
 
 gazelle_dependencies()
 

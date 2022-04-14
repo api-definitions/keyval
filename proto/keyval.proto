@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package apidefinitions.keyval;
 
-option go_package = "github.com/api-definitions/keyval/proto/keyvalpb";
+option go_package = "github.com/api-definitions/keyval/proto/go/keyvalpb";
 
 // A simple key-value storage service
 service KeyValueService {
