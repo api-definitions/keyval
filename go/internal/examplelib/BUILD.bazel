@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/api-definitions/keyval/go/internal/examplelib",
     visibility = ["//go:__subpackages__"],
     deps = [
-        "//proto:keyvalpb_go_proto",
-        "@com_github_golang_glog//:go_default_library",
+        "//go/keyvalpb",
+        "@com_github_golang_glog//:glog",
     ],
 )

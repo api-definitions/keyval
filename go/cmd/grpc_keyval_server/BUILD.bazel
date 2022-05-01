@@ -11,5 +11,11 @@ go_library(
     srcs = ["grpc_keyval_server.go"],
     importpath = "github.com/api-definitions/keyval/go/cmd/grpc_keyval_server",
     visibility = ["//visibility:private"],
-    deps = ["@com_github_golang_glog//:go_default_library"],
+    deps = [
+        "//go/internal/memserver",
+        "//go/keyvalpb",
+        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//reflection",
+    ],
 )
