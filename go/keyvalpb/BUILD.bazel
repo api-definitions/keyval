@@ -1,0 +1,31 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@build_stack_rules_proto//rules:proto_compiled_sources.bzl", "proto_compiled_sources")
+
+# Regenerate compiled source with
+# bazel run  //go/keyvalpb:compiled_sources.update
+proto_compiled_sources(
+    name = "compiled_sources",
+    srcs = [
+        "keyvalpb.pb.go",
+    ],
+    output_mappings = [
+        "keyvalpb.pb.go=github.com/api-definitions/keyval/go/keyvalpb/keyval.pb.go",
+    ],
+    plugins = [
+        "@build_stack_rules_proto//plugin/golang/protobuf:protoc-gen-go",
+    ],
+    proto = "//proto:keyval_proto",
+    verbose = True,
+    visibility = ["//proto:__subpackages__"],
+)
+
+go_library(
+    name = "keyvalpb",
+    srcs = ["keyvalpb.pb.go"],
+    importpath = "github.com/api-definitions/keyval/go/keyvalpb",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+    ],
+)

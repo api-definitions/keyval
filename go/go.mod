@@ -1,4 +1,4 @@
-module github.com/api-definitions/keyval
+module github.com/api-definitions/keyval/go
 
 go 1.18
 

@@ -1,3 +1,5 @@
+// Program grpc_keyval_server is a memory-backed key/value gRPC server written
+// in Go.
 package main
 
 import (
@@ -6,6 +8,6 @@ import (
 
 func main() {
 	glog.Infof("hello, world")
-	keyvalpb.GetValueRequest
+	keyvalpb
 	//keyvalpb.GetValueRequest
 }
