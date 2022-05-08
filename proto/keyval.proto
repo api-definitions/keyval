@@ -14,6 +14,48 @@ service KeyValueService {
 
   // Provides a value for each key request
   rpc SetValue (SetValueRequest) returns (SetValueResponse) {}
+
+  // Transact performs a series of operations within a single transaction.
+  rpc Transact(stream TransactRequest) returns (stream TransactResponse) {}
+}
+
+// A series of TransactRequest is sent to the server as part of the Transact
+// streaming RPC.
+message TransactRequest {
+  // An identifier used to identify the request.
+  string request_id = 1;
+  oneof action {
+    GetValueRequest get_value_request = 2;
+    HasValueRequest has_value_request = 3;
+    SetValueRequest set_value_request = 4;
+    // Commit the transaction. After this call, no more actions are allowed.
+    CommitRequest commit_request = 5;
+    
+    // Abort the transaction.
+    AbortRequest abort_request = 6;
+  }
+
+  message CommitRequest {}
+  message AbortRequest {}
+}
+
+// A series of TransactResponse is returned by the server as part of the Transact
+// streaming RPC.
+message TransactResponse {
+  // The id of the corresponding request from the client. This allows the server
+  // to respond to the client out of order.
+  string request_id = 1;
+
+  oneof response {
+    Value get_value_response = 2;
+    HasValueResponse has_value_response = 3;
+    SetValueResponse set_value_response = 4;
+    CommitResponse commit_response = 5;
+    AbortResponse abort_response = 6;
+  }
+
+  message CommitResponse {}
+  message AbortResponse {}
 }
 
 // The request message containing the key

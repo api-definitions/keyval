@@ -21,6 +21,7 @@ type KeyValueServiceClient interface {
 	HasValue(ctx context.Context, in *HasValueRequest, opts ...grpc.CallOption) (*HasValueResponse, error)
 	GetValue(ctx context.Context, in *GetValueRequest, opts ...grpc.CallOption) (*Value, error)
 	SetValue(ctx context.Context, in *SetValueRequest, opts ...grpc.CallOption) (*SetValueResponse, error)
+	Transact(ctx context.Context, opts ...grpc.CallOption) (KeyValueService_TransactClient, error)
 }
 
 type keyValueServiceClient struct {
@@ -58,6 +59,37 @@ func (c *keyValueServiceClient) SetValue(ctx context.Context, in *SetValueReques
 	return out, nil
 }
 
+func (c *keyValueServiceClient) Transact(ctx context.Context, opts ...grpc.CallOption) (KeyValueService_TransactClient, error) {
+	stream, err := c.cc.NewStream(ctx, &KeyValueService_ServiceDesc.Streams[0], "/apidefinitions.keyval.KeyValueService/Transact", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &keyValueServiceTransactClient{stream}
+	return x, nil
+}
+
+type KeyValueService_TransactClient interface {
+	Send(*TransactRequest) error
+	Recv() (*TransactResponse, error)
+	grpc.ClientStream
+}
+
+type keyValueServiceTransactClient struct {
+	grpc.ClientStream
+}
+
+func (x *keyValueServiceTransactClient) Send(m *TransactRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *keyValueServiceTransactClient) Recv() (*TransactResponse, error) {
+	m := new(TransactResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // KeyValueServiceServer is the server API for KeyValueService service.
 // All implementations must embed UnimplementedKeyValueServiceServer
 // for forward compatibility
@@ -65,6 +97,7 @@ type KeyValueServiceServer interface {
 	HasValue(context.Context, *HasValueRequest) (*HasValueResponse, error)
 	GetValue(context.Context, *GetValueRequest) (*Value, error)
 	SetValue(context.Context, *SetValueRequest) (*SetValueResponse, error)
+	Transact(KeyValueService_TransactServer) error
 	mustEmbedUnimplementedKeyValueServiceServer()
 }
 
@@ -80,6 +113,9 @@ func (UnimplementedKeyValueServiceServer) GetValue(context.Context, *GetValueReq
 }
 func (UnimplementedKeyValueServiceServer) SetValue(context.Context, *SetValueRequest) (*SetValueResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetValue not implemented")
+}
+func (UnimplementedKeyValueServiceServer) Transact(KeyValueService_TransactServer) error {
+	return status.Errorf(codes.Unimplemented, "method Transact not implemented")
 }
 func (UnimplementedKeyValueServiceServer) mustEmbedUnimplementedKeyValueServiceServer() {}
 
@@ -148,6 +184,32 @@ func _KeyValueService_SetValue_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _KeyValueService_Transact_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(KeyValueServiceServer).Transact(&keyValueServiceTransactServer{stream})
+}
+
+type KeyValueService_TransactServer interface {
+	Send(*TransactResponse) error
+	Recv() (*TransactRequest, error)
+	grpc.ServerStream
+}
+
+type keyValueServiceTransactServer struct {
+	grpc.ServerStream
+}
+
+func (x *keyValueServiceTransactServer) Send(m *TransactResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *keyValueServiceTransactServer) Recv() (*TransactRequest, error) {
+	m := new(TransactRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // KeyValueService_ServiceDesc is the grpc.ServiceDesc for KeyValueService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -168,6 +230,13 @@ var KeyValueService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _KeyValueService_SetValue_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Transact",
+			Handler:       _KeyValueService_Transact_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/keyval.proto",
 }
